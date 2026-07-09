@@ -1,0 +1,159 @@
+﻿@model WebAppSafeJourney.ViewModels.DestinationDetailsVM
+
+@{
+    ViewData["Title"] = Model.Name;
+    // صورة معبد أبو سمبل لتناسب عظمة تفاصيل المزارات
+    ViewData["BgImage"] = "https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?q=80&w=1920";
+}
+
+<div class="container mt-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb p-3 rounded-3 shadow-sm" style="background-color: rgba(255, 255, 255, 0.85); border-left: 4px solid var(--pharaoh-gold);">
+            <li class="breadcrumb-item"><a asp-action="Index" style="color: var(--lapis-blue); font-weight: bold; text-decoration: none;">Home</a></li>
+            <li class="breadcrumb-item active fw-bold text-dark" aria-current="page">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5 mt-2">
+        <!-- Destination Image -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="border-bottom: 5px solid var(--pharaoh-gold) !important;">
+                @if (!string.IsNullOrEmpty(Model.CoverImageUrl))
+                {
+                    <img src="@Model.CoverImageUrl" class="img-fluid w-100" style="max-height: 500px; object-fit: cover;" alt="@Model.Name" />
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-center w-100" style="height: 450px; background-color: var(--lapis-blue); color: var(--pharaoh-gold);">
+                        <div class="text-center">
+                            <i class="bi bi-image-alt display-1 d-block mb-3"></i>
+                            <h3 style="font-family: 'Cinzel', serif;">No Image Available</h3>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Destination Info & Booking -->
+        <div class="col-md-6 d-flex flex-column">
+            <div class="card border-0 shadow-lg rounded-4 p-4 mb-4 flex-grow-1" style="background-color: rgba(255, 255, 255, 0.92);">
+                <span class="badge mb-3 align-self-start fs-6 px-3 py-2" style="background-color: var(--lapis-blue); color: var(--pharaoh-gold); border: 1px solid var(--pharaoh-gold);">
+                    <i class="bi bi-geo-alt-fill me-1"></i> @Model.Region
+                </span>
+
+                <h1 class="display-4 fw-bold mb-4" style="color: var(--lapis-blue); font-family: 'Cinzel', serif;">@Model.Name</h1>
+
+                <h5 class="fw-bold mb-3" style="color: var(--pharaoh-gold-dark);">
+                    <i class="bi bi-scroll me-2"></i>About this Sacred Place
+                </h5>
+                <p class="text-dark lead" style="white-space: pre-line; text-align: justify; line-height: 1.8;">
+                    @Model.Description
+                </p>
+            </div>
+
+            <!-- Booking Box -->
+            <div class="card border-0 shadow-lg rounded-4 p-4" style="background-color: var(--lapis-blue); border-left: 5px solid var(--pharaoh-gold) !important;">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="text-white">
+                        <h4 class="mb-1 fw-bold" style="font-family: 'Cinzel', serif; color: var(--pharaoh-gold);">Ready for the Journey?</h4>
+                        <small class="text-white-50">Secure your spot in history today.</small>
+                    </div>
+
+                    <form asp-controller="Bookings" asp-action="CreateRequest" method="post" class="m-0">
+                        <input type="hidden" name="destinationId" value="@Model.Id" />
+                        <button type="submit" class="btn btn-gold btn-lg fw-bold px-5 py-3 shadow">
+                            <i class="bi bi-send-check me-2"></i> Book This Trip
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5 mb-5">
+    <div class="card border-0 shadow-lg rounded-4 p-5" style="background-color: rgba(255, 255, 255, 0.95); border-top: 5px solid var(--lapis-blue) !important;">
+        <h3 class="fw-bold mb-4" style="color: var(--lapis-blue); font-family: 'Cinzel', serif;">
+            <i class="bi bi-chat-quote-fill me-2 text-warning"></i> Travelers' Chronicles
+        </h3>
+        <hr style="border-color: var(--pharaoh-gold); opacity: 0.5;">
+
+        <!-- 1. Review Form -->
+        @if (User?.Identity?.IsAuthenticated ?? false)
+        {
+            <div class="card p-4 mb-5 border border-warning shadow-sm" style="background-color: var(--papyrus-bg);">
+                <h5 class="fw-bold" style="color: var(--lapis-blue);"><i class="bi bi-pencil-square me-2"></i>Inscribe Your Experience</h5>
+                <form asp-controller="Reviews" asp-action="Create" method="post" class="mt-3">
+                    <input type="hidden" name="destinationId" value="@Model.Id" />
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <select name="rating" class="form-select border-warning" id="ratingSelect" required>
+                                    <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+                                    <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+                                    <option value="3">⭐⭐⭐ (3 Stars)</option>
+                                    <option value="2">⭐⭐ (2 Stars)</option>
+                                    <option value="1">⭐ (1 Star)</option>
+                                </select>
+                                <label for="ratingSelect"><i class="bi bi-star-fill text-warning"></i> Rating</label>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="form-floating">
+                                <input type="text" name="comment" class="form-control border-warning" id="commentInput" placeholder="Share your experience..." required />
+                                <label for="commentInput"><i class="bi bi-chat-text"></i> Your Tale</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-end mt-3">
+                        <button type="submit" class="btn btn-gold px-4 py-2 fw-bold"><i class="bi bi-send me-1"></i> Inscribe Review</button>
+                    </div>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="alert text-center mb-5 border border-warning" style="background-color: var(--papyrus-bg); color: var(--lapis-blue);">
+                <i class="bi bi-lock-fill fs-4 d-block mb-2 text-warning"></i>
+                <a asp-controller="Account" asp-action="Login" class="fw-bold" style="color: var(--lapis-blue);">Sign in</a> to leave your mark on history.
+            </div>
+        }
+
+        <!-- 2. Display Reviews -->
+        <div class="row row-cols-1 row-cols-md-2 g-4 mt-2">
+            @if (Model.Reviews != null && Model.Reviews.Any())
+            {
+                @foreach (var review in Model.Reviews)
+                {
+                    <div class="col">
+                        <div class="card h-100 border-0 shadow-sm" style="background-color: white; border-left: 4px solid var(--lapis-blue) !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold mb-0" style="color: var(--lapis-blue);">
+                                        <i class="bi bi-person-circle text-secondary me-2"></i>@review.TouristName
+                                    </h6>
+                                    <span class="badge bg-warning text-dark fs-6">
+                                        @review.Rating <i class="bi bi-star-fill"></i>
+                                    </span>
+                                </div>
+                                <hr style="opacity: 0.1;">
+                                <p class="text-muted fst-italic mb-3">"@review.Comment"</p>
+                                <div class="text-end">
+                                    <small class="text-secondary fw-semibold"><i class="bi bi-calendar3 me-1"></i> @review.CreatedAt.ToShortDateString()</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-hourglass-split fs-1 text-muted mb-3 d-block"></i>
+                    <h5 class="text-muted" style="font-family: 'Cinzel', serif;">The scrolls are empty. Be the first to tell the tale!</h5>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,277 @@
+﻿@model IEnumerable<WebAppSafeJourney.Models.Destination>
+@using WebAppSafeJourney.Models.Enums
+@{
+    ViewData["Title"] = "Explore Egypt";
+    ViewData["FullBleedHero"] = true; // يفعّل النافبار الشفاف فوق الـ Hero
+}
+
+@section Styles {
+    <style>
+        /* ===== Full-bleed breakout (يكسر حدود الـ container بس هنا) ===== */
+        .hero-breakout {
+            position: relative;
+            width: 100vw;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+
+        .hero-immersive {
+            min-height: 94vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(6,40,61,.55) 0%, rgba(6,40,61,.8) 60%, rgba(6,40,61,.98) 100%), radial-gradient(circle at 15% 25%, rgba(212,175,55,.28), transparent 45%), radial-gradient(circle at 85% 75%, rgba(212,175,55,.18), transparent 40%), var(--lapis-blue);
+            /* لو عندك صورة حقيقية لمعبد/أهرامات، فك التعليق وحط مسارها هنا لتأثير أقوى:
+                    background-image: linear-gradient(180deg, rgba(6,40,61,.55), rgba(6,40,61,.95)), url('/images/hero-pyramids.jpg');
+                    background-size: cover; background-position: center;
+                    */
+        }
+
+            .hero-immersive::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background-image: radial-gradient(rgba(212,175,55,.35) 1.5px, transparent 1.5px);
+                background-size: 28px 28px;
+                opacity: .3;
+                pointer-events: none;
+            }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 780px;
+        }
+
+            .hero-content h1 {
+                font-family: 'Cinzel', serif;
+                text-shadow: 0 4px 25px rgba(0,0,0,.4);
+            }
+
+            .hero-content .lead {
+                text-shadow: 0 2px 12px rgba(0,0,0,.4);
+            }
+
+        .search-float-card {
+            margin-top: -65px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .destination-card {
+            border: none;
+            border-radius: 18px;
+            transition: transform .35s ease, box-shadow .35s ease;
+        }
+
+            .destination-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 25px 45px rgba(11,61,98,.18);
+            }
+
+            .destination-card img {
+                transition: transform .5s ease;
+            }
+
+            .destination-card:hover img {
+                transform: scale(1.08);
+            }
+
+        .guides-scroll {
+            display: flex;
+            gap: 1.25rem;
+            overflow-x: auto;
+            padding: .5rem .25rem 1.5rem;
+            scroll-snap-type: x mandatory;
+        }
+
+            .guides-scroll::-webkit-scrollbar {
+                height: 8px;
+            }
+
+            .guides-scroll::-webkit-scrollbar-thumb {
+                background: var(--pharaoh-gold);
+                border-radius: 10px;
+            }
+
+        .guide-mini-card {
+            flex: 0 0 auto;
+            width: 240px;
+            scroll-snap-align: start;
+            border: none;
+            border-radius: 16px;
+            text-align: center;
+            padding: 1.75rem 1.25rem;
+            background: #fff;
+            transition: transform .3s ease, box-shadow .3s ease;
+        }
+
+            .guide-mini-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 18px 35px rgba(11,61,98,.15);
+            }
+
+        .guide-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--lapis-blue);
+            color: var(--pharaoh-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.6rem;
+            margin: 0 auto 1rem;
+        }
+
+        .why-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(212,175,55,.12);
+            color: var(--pharaoh-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7rem;
+            margin: 0 auto 1rem;
+            transition: all .3s ease;
+        }
+
+        .why-block:hover .why-icon {
+            background: var(--pharaoh-gold);
+            color: #fff;
+            transform: scale(1.1);
+        }
+    </style>
+}
+
+<!-- ============ HERO ============ -->
+<div class="hero-breakout">
+    <div class="hero-immersive">
+        <div class="hero-content px-3">
+            <h1 class="display-3 fw-bold mb-3">Journey Through Time</h1>
+            <p class="fs-4 lead mb-4">Uncover the mysteries of the Pharaohs with expert local guides.</p>
+            <a href="#exploreSection" class="btn btn-gold btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg">
+                <i class="bi bi-compass me-2"></i>Start Your Sacred Journey
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- ============ FLOATING SEARCH (نفس الفورم والـ GET بتاعتك بدون أي تغيير في المنطق) ============ -->
+    <div id="exploreSection" class="card shadow-lg border-0 search-float-card mb-5 p-4">
+        <form method="get" class="row g-3 align-items-center">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-warning"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control border-start-0" placeholder="Search temples, tombs, or cities..." value="@ViewBag.SearchTerm" />
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-warning"><i class="bi bi-geo-alt"></i></span>
+                    <select name="region" class="form-select border-start-0" asp-items="Html.GetEnumSelectList<EgyptRegion>()">
+                        <option value="">Explore All Regions</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-gold w-100 py-2 fw-bold">Discover</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ============ DESTINATIONS GRID (نفس الداتا والـ Loop بتاعتك) ============ -->
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1" style="color: var(--lapis-blue);">Explore Sacred Regions</h2>
+        <p class="text-muted mb-0">Handpicked destinations across the land of the Pharaohs</p>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 destination-card overflow-hidden shadow-sm">
+                    <div style="height: 250px; position: relative; overflow: hidden;">
+                        @if (!string.IsNullOrEmpty(item.CoverImageUrl))
+                        {
+                            <img src="@item.CoverImageUrl" loading="lazy" class="w-100 h-100" style="object-fit: cover;" alt="@item.Name">
+                        }
+                        else
+                        {
+                            <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: var(--lapis-blue); color: var(--pharaoh-gold);">
+                                <i class="bi bi-image fs-1"></i>
+                            </div>
+                        }
+                        <span class="badge position-absolute top-0 end-0 m-3 fs-6" style="background-color: var(--lapis-blue);">@item.Region</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="card-title text-center" style="color: var(--lapis-blue);">@item.Name</h4>
+                        <hr style="color: var(--pharaoh-gold); opacity: 0.5;">
+                        <p class="card-text text-muted flex-grow-1 text-center px-2">
+                            @(item.Description?.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)
+                        </p>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark w-100 mt-3" style="border-color: var(--pharaoh-gold); color: var(--lapis-blue);">Unveil Secrets</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center my-5 p-5 bg-white rounded shadow-sm border border-warning">
+            <i class="bi bi-compass fs-1 text-warning mb-3 d-block"></i>
+            <h4 style="color: var(--lapis-blue);">No ancient sites found matching your criteria.</h4>
+        </div>
+    }
+
+    <!-- ============ MEET OUR EXPERT GUIDES ============ -->
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h2 class="fw-bold mb-1" style="color: var(--lapis-blue);">Meet Our Expert Guides</h2>
+            <p class="text-muted mb-0">Licensed Egyptologists ready to bring history to life</p>
+        </div>
+        <a asp-controller="Guides" asp-action="Index" class="text-decoration-none fw-semibold" style="color: var(--pharaoh-gold);">
+            View All <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+
+    @await Component.InvokeAsync("FeaturedGuides", new { count = 6 })
+
+    <!-- ============ WHY CHOOSE US ============ -->
+    <div class="rounded-4 p-5 my-5 shadow-sm bg-white">
+        <h2 class="text-center fw-bold mb-5" style="color: var(--lapis-blue);">Why Choose SafeJourney</h2>
+        <div class="row g-4 text-center">
+            <div class="col-md-3 why-block">
+                <div class="why-icon"><i class="bi bi-patch-check-fill"></i></div>
+                <h5 class="fw-bold">Verified Guides</h5>
+                <p class="text-muted small">Every guide is licensed and approved by our team.</p>
+            </div>
+            <div class="col-md-3 why-block">
+                <div class="why-icon"><i class="bi bi-shield-lock-fill"></i></div>
+                <h5 class="fw-bold">Secure Booking</h5>
+                <p class="text-muted small">Your data and bookings are fully protected.</p>
+            </div>
+            <div class="col-md-3 why-block">
+                <div class="why-icon"><i class="bi bi-star-fill"></i></div>
+                <h5 class="fw-bold">Authentic Experiences</h5>
+                <p class="text-muted small">Curated destinations with real historical depth.</p>
+            </div>
+            <div class="col-md-3 why-block">
+                <div class="why-icon"><i class="bi bi-headset"></i></div>
+                <h5 class="fw-bold">Dedicated Support</h5>
+                <p class="text-muted small">We're here to help before, during, and after your trip.</p>
+            </div>
+        </div>
+    </div>
+</div>

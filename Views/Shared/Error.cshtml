@@ -1,0 +1,38 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+    ViewData["BgImage"] = "https://images.unsplash.com/photo-1542840410-3092f9f3cdb0?q=80&w=1920"; // صورة خلفية مناسبة للخطأ
+}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="text-center p-5 rounded-4 shadow-lg" style="background-color: rgba(255, 255, 255, 0.95); border-top: 5px solid #dc3545 !important; max-width: 700px;">
+
+        <i class="bi bi-exclamation-triangle display-1 text-danger"></i>
+
+        <h1 class="display-3 fw-bold mt-3 text-danger" style="font-family: 'Cinzel', serif;">Error!</h1>
+        <h4 class="mb-4">Something went wrong in the sands of time.</h4>
+
+        @if (Model.ShowRequestId)
+        {
+            <div class="alert alert-light border shadow-sm">
+                <strong>Request ID:</strong> <code>@Model.RequestId</code>
+            </div>
+        }
+
+        <hr class="my-4">
+
+        <h5 class="fw-bold mb-3">Development Mode Note:</h5>
+        <p class="text-muted">
+            Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
+        </p>
+        <p class="text-muted small">
+            <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
+        </p>
+
+        <div class="mt-4">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-gold btn-lg fw-bold px-4">
+                <i class="bi bi-arrow-left me-2"></i> Return to Safety
+            </a>
+        </div>
+    </div>
+</div>

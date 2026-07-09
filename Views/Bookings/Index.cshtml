@@ -1,0 +1,111 @@
+﻿@model IEnumerable<WebAppSafeJourney.Models.TripBooking>
+@using WebAppSafeJourney.Models.Enums
+
+@{
+    ViewData["Title"] = "Trip Bookings";
+    // خلفية بردية سادة عشان الجدول يكون واضح
+    ViewData["BgImage"] = "";
+}
+
+<div class="container mt-5 mb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 p-3 rounded-3 shadow-sm" style="background-color: var(--lapis-blue); color: white; border-left: 5px solid var(--pharaoh-gold);">
+        <h2 class="fw-bold mb-0" style="font-family: 'Cinzel', serif;">
+            <i class="bi bi-journal-bookmark-fill text-warning me-2"></i>
+            @(User.IsInRole("Admin") ? "Imperial Booking Vault (Admin)" : "My Sacred Journeys")
+        </h2>
+    </div>
+
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="background-color: rgba(255, 255, 255, 0.95); border-top: 5px solid var(--pharaoh-gold) !important;">
+        <div class="card-body p-0 table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background-color: var(--lapis-blue); color: white;">
+                    <tr>
+                        <th class="py-3 px-4"><i class="bi bi-hash"></i> Scroll ID</th>
+                        <th class="py-3"><i class="bi bi-geo-alt"></i> Destination</th>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <th class="py-3"><i class="bi bi-person"></i> Traveler Name</th>
+                        }
+                        <th class="py-3"><i class="bi bi-calendar3"></i> Date of Journey</th>
+                        <th class="py-3"><i class="bi bi-shield-check"></i> Status</th>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <th class="py-3 text-center"><i class="bi bi-gear"></i> Royal Decree (Actions)</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.2);">
+                            <td class="align-middle fw-bold px-4" style="color: var(--pharaoh-gold-dark);">#@item.Id</td>
+                            <td class="align-middle fw-bold" style="color: var(--lapis-blue); font-size: 1.1rem;">@item.Destination?.Name</td>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <td class="align-middle fw-semibold text-muted">@item.Tourist?.FullName</td>
+                            }
+
+                            <td class="align-middle fw-semibold">
+                                <span class="badge" style="background-color: var(--papyrus-bg); color: var(--lapis-blue); border: 1px solid var(--pharaoh-gold);">
+                                    @item.StartDate.ToString("MMM dd, yyyy")
+                                </span>
+                            </td>
+
+                            <td class="align-middle">
+                                @if (item.Status == TripBookingStatus.Pending)
+                                {
+                                    <span class="badge bg-warning text-dark px-3 py-2 shadow-sm"><i class="bi bi-hourglass-split me-1"></i> Pending Awaiting</span>
+                                }
+                                else if (item.Status == TripBookingStatus.Confirmed)
+                                {
+                                    <span class="badge bg-success px-3 py-2 shadow-sm"><i class="bi bi-check-circle-fill me-1"></i> Confirmed by Oracle</span>
+                                }
+                                else if (item.Status == TripBookingStatus.Completed)
+                                {
+                                    <span class="badge bg-info text-dark px-3 py-2 shadow-sm"><i class="bi bi-flag-fill me-1"></i> Journey Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger px-3 py-2 shadow-sm"><i class="bi bi-x-circle-fill me-1"></i> Cancelled</span>
+                                }
+                            </td>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <td class="align-middle text-center">
+                                    @if (item.Status == TripBookingStatus.Pending)
+                                    {
+                                        <form asp-action="UpdateStatus" method="post" class="d-inline">
+                                            <input type="hidden" name="bookingId" value="@item.Id" />
+                                            <input type="hidden" name="status" value="@TripBookingStatus.Confirmed" />
+                                            <button type="submit" class="btn btn-sm btn-success fw-bold px-3 me-1 shadow-sm"><i class="bi bi-check2"></i> Confirm</button>
+                                        </form>
+                                        <form asp-action="UpdateStatus" method="post" class="d-inline">
+                                            <input type="hidden" name="bookingId" value="@item.Id" />
+                                            <input type="hidden" name="status" value="@TripBookingStatus.Cancelled" />
+                                            <button type="submit" class="btn btn-sm btn-danger fw-bold px-3 shadow-sm"><i class="bi bi-x-lg"></i> Cancel</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small fw-bold fst-italic border rounded px-2 py-1 bg-light">Decree Issued</span>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (!Model.Any())
+            {
+                <div class="text-center p-5">
+                    <i class="bi bi-ticket-detailed display-1 text-muted mb-3 d-block"></i>
+                    <h4 class="text-muted" style="font-family: 'Cinzel', serif;">No sacred journeys recorded yet.</h4>
+                </div>
+            }
+        </div>
+    </div>
+</div>

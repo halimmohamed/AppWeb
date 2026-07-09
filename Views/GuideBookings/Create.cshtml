@@ -1,0 +1,78 @@
+﻿@model WebAppSafeJourney.ViewModels.GuideBookingCreateVM
+
+@{
+    ViewData["Title"] = "Book a Tour Guide";
+    ViewData["BgImage"] = "https://images.unsplash.com/photo-1541410245366-07469a473489?q=80&w=1920"; // صورة خلفية فخمة لجو الحجوزات
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="background-color: rgba(255, 255, 255, 0.95); border-top: 5px solid var(--pharaoh-gold) !important;">
+                <div class="card-header py-4 text-center" style="background-color: var(--lapis-blue); color: var(--pharaoh-gold);">
+                    <h3 class="mb-0 fw-bold" style="font-family: 'Cinzel', serif;">
+                        <i class="bi bi-calendar-check me-2"></i> Seal Your Journey with @ViewBag.GuideName
+                    </h3>
+                </div>
+
+                <div class="card-body p-5">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-4 fw-bold"></div>
+                        <input type="hidden" asp-for="GuideId" />
+
+                        <div class="form-floating mb-4">
+                            <select asp-for="DestinationId" asp-items="ViewBag.Destinations" class="form-select border-warning" id="destSelect">
+                                <option value="">-- Select Sacred Destination --</option>
+                            </select>
+                            <label for="destSelect"><i class="bi bi-bank me-1"></i> Choose Destination</label>
+                            <span asp-validation-for="DestinationId" class="text-danger small fw-bold"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="form-floating">
+                                    <input asp-for="TourDate" type="date" class="form-control border-warning" id="dateInput" />
+                                    <label for="dateInput"><i class="bi bi-calendar-event me-1"></i> Start Date</label>
+                                    <span asp-validation-for="TourDate" class="text-danger small fw-bold"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="form-floating">
+                                    <input asp-for="DurationDays" type="number" min="1" max="365" class="form-control border-warning" id="durationInput" placeholder="Days" />
+                                    <label for="durationInput"><i class="bi bi-clock me-1"></i> Duration (Days)</label>
+                                    <span asp-validation-for="DurationDays" class="text-danger small fw-bold"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <input asp-for="NumberOfPeople" type="number" min="1" max="100" class="form-control border-warning" id="peopleInput" placeholder="People" />
+                            <label for="peopleInput"><i class="bi bi-people me-1"></i> Number of Travelers</label>
+                            <span asp-validation-for="NumberOfPeople" class="text-danger small fw-bold"></span>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <textarea asp-for="SpecialNotes" class="form-control border-warning" id="notesInput" rows="3" placeholder="Special requirements..." style="height: 100px;"></textarea>
+                            <label for="notesInput"><i class="bi bi-pencil-square me-1"></i> Special Requests or Notes</label>
+                            <span asp-validation-for="SpecialNotes" class="text-danger small fw-bold"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a asp-controller="Guides" asp-action="Index" class="btn btn-outline-secondary fw-bold px-4">
+                                <i class="bi bi-arrow-left me-1"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-gold fw-bold px-5 py-2 shadow-sm fs-5">
+                                <i class="bi bi-send-check me-2"></i> Finalize Booking
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

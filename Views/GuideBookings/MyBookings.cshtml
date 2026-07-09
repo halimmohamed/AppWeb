@@ -1,0 +1,123 @@
+﻿@model IEnumerable<WebAppSafeJourney.Models.GuideBooking>
+@using WebAppSafeJourney.Models.Enums
+
+@{
+    ViewData["Title"] = "My Guide Bookings";
+    ViewData["BgImage"] = ""; // خلفية سادة لسهولة قراءة التذاكر
+}
+
+<div class="container mt-5 mb-5">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 p-3 rounded-3 shadow-sm" style="background-color: var(--lapis-blue); color: white; border-left: 5px solid var(--pharaoh-gold);">
+        <h2 class="fw-bold mb-0" style="font-family: 'Cinzel', serif;">
+            <i class="bi bi-compass text-warning me-2"></i> My Personal Guides
+        </h2>
+    </div>
+
+    <!-- Alerts -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success shadow-sm border-0 fw-bold" style="border-left: 5px solid #198754;">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger shadow-sm border-0 fw-bold" style="border-left: 5px solid #dc3545;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
+        </div>
+    }
+
+    <!-- Table Section -->
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="background-color: rgba(255, 255, 255, 0.95); border-top: 5px solid var(--pharaoh-gold) !important;">
+        <div class="card-body p-0 table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background-color: var(--lapis-blue); color: white;">
+                    <tr>
+                        <th class="py-3 px-4"><i class="bi bi-hash"></i></th>
+                        <th class="py-3"><i class="bi bi-person-badge"></i> Guide Name</th>
+                        <th class="py-3"><i class="bi bi-geo-alt"></i> Destination</th>
+                        <th class="py-3"><i class="bi bi-calendar-check"></i> Tour Date</th>
+                        <th class="py-3"><i class="bi bi-clock-history"></i> Duration</th>
+                        <th class="py-3"><i class="bi bi-shield-check"></i> Status</th>
+                        <th class="py-3 text-center"><i class="bi bi-gear"></i> Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.2);">
+                            <td class="align-middle fw-bold px-4" style="color: var(--pharaoh-gold-dark);">#@item.Id</td>
+                            <td class="align-middle fw-bold text-dark" style="font-size: 1.1rem;">@item.Guide?.User?.FullName</td>
+                            <td class="align-middle fw-bold" style="color: var(--lapis-blue);">@item.Destination?.Name</td>
+
+                            <td class="align-middle fw-semibold">
+                                <span class="badge" style="background-color: var(--papyrus-bg); color: var(--lapis-blue); border: 1px solid var(--pharaoh-gold);">
+                                    @item.TourDate.ToString("MMM dd, yyyy")
+                                </span>
+                            </td>
+
+                            <td class="align-middle text-center fw-bold">
+                                <span class="badge bg-secondary rounded-pill px-3 shadow-sm">@item.DurationDays Days</span>
+                            </td>
+
+                            <td class="align-middle">
+                                @{
+                                    var (badgeClass, label) = item.Status switch
+                                    {
+                                        GuideBookingStatus.Pending => ("bg-warning text-dark", "Pending"),
+                                        GuideBookingStatus.Confirmed => ("bg-success", "Confirmed"),
+                                        GuideBookingStatus.Rejected => ("bg-danger", "Rejected"),
+                                        GuideBookingStatus.Completed => ("bg-info text-dark", "Completed"),
+                                        _ => ("bg-secondary", "Cancelled")
+                                    };
+                                }
+                                <span class="badge @badgeClass px-3 py-2 shadow-sm">@label</span>
+                            </td>
+
+                            <td class="align-middle text-center">
+                                @if (item.Status == GuideBookingStatus.Pending)
+                                {
+                                    <form asp-action="Cancel" asp-route-id="@item.Id" method="post" class="d-inline"
+                                          onsubmit="return confirm('Are you sure you want to cancel the request? This action cannot be undone.');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger fw-bold shadow-sm px-3">
+                                            <i class="bi bi-x-circle me-1"></i> Cancel
+                                        </button>
+                                    </form>
+                                }
+                                else if (!string.IsNullOrEmpty(item.GuideResponseMessage))
+                                {
+                                    <span class="text-muted small fw-bold" style="cursor: help; border-bottom: 1px dashed gray;" title="@item.GuideResponseMessage">
+                                        <i class="bi bi-chat-left-quote-fill text-info me-1"></i> Guide's Message
+                                    </span>
+                                }
+                                else if (!string.IsNullOrEmpty(item.RejectionReason))
+                                {
+                                    <span class="text-danger small fw-bold" style="cursor: help; border-bottom: 1px dashed red;" title="@item.RejectionReason">
+                                        <i class="bi bi-exclamation-circle-fill me-1"></i> Rejection Reason
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small fst-italic">—</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (!Model.Any())
+            {
+                <div class="text-center p-5">
+                    <i class="bi bi-compass display-1 mb-3 d-block" style="color: var(--pharaoh-gold);"></i>
+                    <h5 class="mb-3" style="color: var(--lapis-blue); font-family: 'Cinzel', serif;">Your travel log is empty.</h5>
+                    <a asp-controller="Guides" asp-action="Index" class="btn btn-gold px-4 py-2 fw-bold shadow-sm">
+                        <i class="bi bi-search me-2"></i> Browse Expert Guides
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

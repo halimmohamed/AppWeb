@@ -1,0 +1,89 @@
+﻿@model WebAppSafeJourney.ViewModels.DestinationVM
+@using WebAppSafeJourney.Models.Enums
+
+@{
+    ViewData["Title"] = "Add New Destination";
+    ViewData["BgImage"] = ""; // خلفية سادة للأدمن
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold mb-0" style="color: var(--lapis-blue); font-family: 'Cinzel', serif;">
+                    <i class="bi bi-plus-square-dotted text-warning me-2"></i> Add Sacred Site
+                </h2>
+                <a asp-action="Index" class="btn btn-outline-secondary fw-bold px-3">
+                    <i class="bi bi-arrow-left"></i> Back to Vault
+                </a>
+            </div>
+
+            <div class="card shadow-lg border-0 rounded-4" style="background-color: rgba(255, 255, 255, 0.95); border-top: 5px solid var(--pharaoh-gold) !important;">
+                <div class="card-body p-5">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-4 fw-bold border border-danger p-3 rounded" style="background-color: #fff5f5;"></div>
+
+                        <div class="row g-4">
+                            <div class="col-md-8">
+                                <div class="form-floating">
+                                    <input asp-for="Name" class="form-control" placeholder="Destination Name" />
+                                    <label asp-for="Name"><i class="bi bi-geo-alt"></i> Name of the Site</label>
+                                    <span asp-validation-for="Name" class="text-danger small fw-bold"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select asp-for="Region" class="form-select" asp-items="Html.GetEnumSelectList<EgyptRegion>()"></select>
+                                    <label asp-for="Region"><i class="bi bi-compass"></i> Region</label>
+                                    <span asp-validation-for="Region" class="text-danger small fw-bold"></span>
+                                </div>
+                            </div>
+
+                            <!-- حقل رفع صورة من الكمبيوتر -->
+                            <div class="col-12">
+                                <div class="mb-2">
+                                    <label class="form-label fw-bold" style="color: var(--lapis-blue);"><i class="bi bi-upload"></i> Upload Image File from Device</label>
+                                    <input asp-for="ImageFile" type="file" class="form-control border-warning" accept="image/*" />
+                                    <span asp-validation-for="ImageFile" class="text-danger small fw-bold"></span>
+                                </div>
+                            </div>
+
+                            <!-- حقل وضع لينك صورة كخيار بديل -->
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input asp-for="CoverImageUrl" class="form-control" placeholder="Image URL" />
+                                    <label asp-for="CoverImageUrl"><i class="bi bi-link-45deg"></i> Or Direct Image URL (Optional)</label>
+                                    <span asp-validation-for="CoverImageUrl" class="text-danger small fw-bold"></span>
+                                </div>
+                                <div class="form-text text-muted mt-1"><i class="bi bi-info-circle"></i> You can upload a file directly above, OR provide an online link.</div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="Description" class="form-label fw-bold" style="color: var(--lapis-blue);"><i class="bi bi-body-text"></i> Historical Description</label>
+                                    <textarea asp-for="Description" class="form-control" rows="6" placeholder="Describe the history and significance of this location..."></textarea>
+                                    <span asp-validation-for="Description" class="text-danger small fw-bold"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" style="border-color: var(--pharaoh-gold); opacity: 0.3;">
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-gold px-5 py-2 fw-bold fs-5 shadow-sm">
+                                <i class="bi bi-check-circle me-2"></i> Save Destination
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

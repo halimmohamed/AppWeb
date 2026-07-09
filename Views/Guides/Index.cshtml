@@ -1,0 +1,89 @@
+﻿@model IEnumerable<WebAppSafeJourney.Models.Guide>
+
+@{
+    ViewData["Title"] = "Available Tour Guides";
+    // صورة لمعبد حتشبسوت كخلفية فخمة لصفحة المرشدين
+    ViewData["BgImage"] = "https://images.unsplash.com/photo-1572948645044-716490ea38fe?q=80&w=1920";
+}
+
+<div class="container mt-5 mb-5">
+
+    <!-- Hero Section -->
+    <div class="text-center mb-5 p-5 rounded-4 shadow-lg" style="background-color: rgba(26, 68, 118, 0.85); border-bottom: 5px solid var(--pharaoh-gold);">
+        <h1 class="display-4 fw-bold text-white mb-3" style="font-family: 'Cinzel', serif;">
+            <i class="bi bi-people-fill text-warning me-2"></i> Guardians of the Heritage
+        </h1>
+        <p class="fs-4 text-white-50 mb-0">
+            Showing expert guides for: <strong class="text-warning">@ViewBag.SelectedRegion</strong>
+        </p>
+    </div>
+
+    <!-- Guides Grid -->
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+        @foreach (var guide in Model)
+        {
+            <div class="col">
+                <div class="card h-100 border-0 shadow-lg rounded-4 text-center overflow-hidden" style="background-color: rgba(255, 255, 255, 0.95); border-top: 4px solid var(--pharaoh-gold) !important; transition: transform 0.3s ease;">
+                    <div class="card-body p-4 d-flex flex-column">
+
+                        <!-- Initials Avatar -->
+                        <div class="mb-3 mt-2">
+                            <div class="rounded-circle mx-auto d-flex justify-content-center align-items-center shadow-sm" style="width: 85px; height: 85px; background-color: var(--lapis-blue); color: var(--pharaoh-gold); font-size: 2.5rem; font-family: 'Cinzel', serif; border: 3px solid var(--pharaoh-gold);">
+                                @(string.IsNullOrEmpty(guide.User?.FullName) ? "?" : guide.User.FullName!.Substring(0, 1).ToUpper())
+                            </div>
+                        </div>
+
+                        <!-- Guide Info -->
+                        <h4 class="fw-bold mb-1" style="color: var(--lapis-blue);">@guide.User?.FullName</h4>
+                        <div class="text-muted small mb-3">
+                            <div class="mb-1"><i class="bi bi-envelope text-warning"></i> @guide.User?.Email</div>
+                            <div><i class="bi bi-telephone text-warning"></i> @(string.IsNullOrEmpty(guide.User?.PhoneNumber) ? "Not Provided" : guide.User.PhoneNumber)</div>
+                        </div>
+
+                        <hr class="w-75 mx-auto" style="border-color: var(--pharaoh-gold); opacity: 0.3;">
+
+                        <p class="text-muted small mb-4 flex-grow-1">
+                            <i class="bi bi-award-fill text-warning"></i> Certified Guide<br />
+                            <span style="font-size: 0.85rem;">Member since @guide.User?.CreatedAt.ToString("MMM yyyy")</span>
+                        </p>
+
+                        <!-- Booking Logic exactly as you wrote it -->
+                        <div class="mt-auto">
+                            @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Tourist"))
+                            {
+                                <a asp-controller="GuideBookings" asp-action="Create" asp-route-guideId="@guide.Id"
+                                   class="btn btn-gold fw-bold w-100 shadow-sm py-2">
+                                    <i class="bi bi-calendar-check me-1"></i> Request Booking
+                                </a>
+                            }
+                            else if (User.Identity != null && User.Identity.IsAuthenticated)
+                            {
+                                <button class="btn btn-outline-secondary fw-bold w-100 py-2" disabled style="border-color: var(--lapis-blue); color: var(--lapis-blue); opacity: 0.7;">
+                                    <i class="bi bi-shield-lock me-1"></i> Tourists Only
+                                </button>
+                            }
+                            else
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="btn fw-bold w-100 py-2" style="background-color: var(--papyrus-bg); color: var(--lapis-blue); border: 1px solid var(--pharaoh-gold);">
+                                    <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Book
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Empty State -->
+    @if (!Model.Any())
+    {
+        <div class="text-center my-5 p-5 border-0 rounded-4 shadow-sm" style="background-color: rgba(249, 246, 237, 0.95); border-top: 4px solid var(--lapis-blue) !important;">
+            <i class="bi bi-person-x display-1 mb-3 d-block" style="color: var(--pharaoh-gold);"></i>
+            <h4 class="mb-3" style="color: var(--lapis-blue); font-family: 'Cinzel', serif;">No approved guides available in this region yet.</h4>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-gold px-4 py-2 fw-bold shadow-sm">
+                <i class="bi bi-arrow-left me-2"></i> Back to Destinations
+            </a>
+        </div>
+    }
+</div>

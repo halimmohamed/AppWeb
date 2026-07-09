@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+    ViewData["BgImage"] = "https://images.unsplash.com/photo-1574943320219-555621f57d6e?q=80&w=1920"; // صورة بوابة معبد
+}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="text-center p-5 rounded-4 shadow-lg" style="background-color: rgba(255, 255, 255, 0.95); border-top: 5px solid var(--pharaoh-gold) !important; max-width: 600px;">
+
+        <i class="bi bi-shield-lock display-1" style="color: var(--lapis-blue);"></i>
+
+        <h1 class="display-3 fw-bold mt-3" style="color: var(--lapis-blue); font-family: 'Cinzel', serif;">Access Denied</h1>
+        <h4 class="text-muted mb-4">The gates to this chamber are sealed.</h4>
+
+        <p class="text-dark lead mb-4">
+            You do not possess the required clearance to enter this sacred section of the journey.
+        </p>
+
+        <div class="d-grid gap-2">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-gold btn-lg fw-bold py-3 shadow-sm">
+                <i class="bi bi-house-door me-2"></i> Return to the Homeland
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,346 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SafeJourney</title>
+
+    <!-- Bootstrap & Icons -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- Google Fonts: Cinzel for Heritage Vibe -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebAppSafeJourney.styles.css" asp-append-version="true" />
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* ===== Layout spacing (compensates for the now-fixed navbar) ===== */
+        .main-content {
+            padding-top: 96px;
+            transition: padding .3s ease;
+        }
+
+        body.has-hero .main-content {
+            padding-top: 0;
+        }
+
+        /* ===== Smart Navbar: transparent over hero, solid everywhere else / on scroll ===== */
+        .navbar-smart {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+            background: transparent;
+            padding: 1.35rem 0;
+            transition: background-color .4s ease, padding .35s ease, box-shadow .4s ease, backdrop-filter .4s ease;
+        }
+
+            .navbar-smart .nav-link,
+            .navbar-smart .navbar-brand {
+                color: #fff;
+            }
+
+            .navbar-smart.scrolled,
+            body:not(.has-hero) .navbar-smart {
+                background: rgba(6, 40, 61, .92);
+                backdrop-filter: blur(14px);
+                -webkit-backdrop-filter: blur(14px);
+                padding: .6rem 0;
+                box-shadow: 0 8px 30px rgba(0,0,0,.25);
+                border-bottom: 1px solid rgba(212, 175, 55, .25);
+            }
+
+        /* ===== Icon buttons (My Bookings / Incoming Requests / Admin) ===== */
+        .nav-icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            color: #fff;
+            background: rgba(255,255,255,.08);
+            font-size: 1.05rem;
+            text-decoration: none;
+            position: relative;
+            transition: all .25s ease;
+        }
+
+            .nav-icon-btn:hover {
+                background: var(--pharaoh-gold);
+                color: var(--lapis-blue-deep, #06283D);
+                transform: translateY(-3px);
+            }
+
+        .notif-badge {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            background: #E74C3C;
+            color: #fff;
+            font-size: .62rem;
+            font-weight: 700;
+            line-height: 1;
+            min-width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--lapis-blue-deep, #06283D);
+        }
+
+        /* ===== User avatar ===== */
+        .avatar-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--pharaoh-gold);
+            color: var(--lapis-blue-deep, #06283D);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.05rem;
+            border: 2px solid rgba(255,255,255,.7);
+            transition: transform .25s ease;
+        }
+
+            .avatar-circle:hover {
+                transform: scale(1.08);
+            }
+
+        .offcanvas.offcanvas-end {
+            background: var(--lapis-blue-deep, #06283D);
+        }
+
+        /* ===== Reusable hover polish (available to every page) ===== */
+        .lift-card {
+            transition: transform .35s ease, box-shadow .35s ease;
+        }
+
+            .lift-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 40px rgba(0,0,0,.15);
+            }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(212,175,55,.35);
+        }
+    </style>
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+@{
+            var bgImage = ViewData["BgImage"] as string;
+
+            // =========================================================================
+            // 🔴 هنا يمكنك تغيير رابط خلفية الموقع الثابتة لكل الصفحات 🔴
+            // =========================================================================
+            if (string.IsNullOrEmpty(bgImage))
+            {
+                    // ضع رابط الصورة الثابتة التي تريدها مكان اللينك بالأسفل:
+                                                            bgImage = "https://i.pinimg.com/1200x/dc/cf/03/dccf032efed4ceeb596635d3b375245e.jpg";
+            }
+
+            // دمج الصورة مع درجة من لون البردي بشفافية حتى يظل الكلام والتصاميم واضحة
+                var bodyStyle = $"background: linear-gradient(rgba(249, 246, 237, 0.65), rgba(249, 246, 237, 0.65)), url('{bgImage}') no-repeat center center fixed; background-size: cover;";
+            var hasHero = ViewData["FullBleedHero"] as bool? ?? false;
+}
+<body class="@(hasHero ? "has-hero" : "")" style="@bodyStyle">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-smart">
+            <div class="container">
+                <a class="navbar-brand fs-3 fw-bold" asp-area="" asp-controller="Home" asp-action="Index" style="font-family:'Cinzel', serif;">
+                    <i class="bi bi-bank text-warning"></i> SafeJourney
+                </a>
+
+                <button class="navbar-toggler border-0 text-white d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav" aria-controls="mobileNav">
+                    <i class="bi bi-list fs-1"></i>
+                </button>
+
+                <!-- Desktop nav (lg and up) -->
+                <div class="collapse navbar-collapse d-none d-lg-flex justify-content-between">
+                    <ul class="navbar-nav me-auto align-items-lg-center">
+                        <li class="nav-item"><a class="nav-link px-3 fw-semibold" asp-controller="Home" asp-action="Index">Destinations</a></li>
+                        <li class="nav-item"><a class="nav-link px-3 fw-semibold" asp-controller="Guides" asp-action="Index">Local Guides</a></li>
+                    </ul>
+
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-2">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            @if (User.IsInRole("Tourist"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-icon-btn" asp-controller="Bookings" asp-action="Index" title="My Trip Bookings">
+                                        <i class="bi bi-suitcase-lg"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-icon-btn" asp-controller="GuideBookings" asp-action="MyBookings" title="My Guide Bookings">
+                                        <i class="bi bi-compass"></i>
+                                    </a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Guide"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-icon-btn" asp-controller="GuideBookings" asp-action="IncomingRequests" title="Incoming Requests">
+                                        <i class="bi bi-inbox"></i>
+                                        @await Component.InvokeAsync("GuideRequestBadge")
+                                    </a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-icon-btn" asp-controller="Admin" asp-action="Index" title="Admin Dashboard">
+                                        <i class="bi bi-speedometer2"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-icon-btn" asp-controller="Destinations" asp-action="Index" title="Manage Destinations">
+                                        <i class="bi bi-map"></i>
+                                    </a>
+                                </li>
+                            }
+
+                            <li class="nav-item dropdown ms-2">
+                                <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="avatar-circle">@(string.IsNullOrEmpty(User.Identity.Name) ? "?" : User.Identity.Name!.Substring(0, 1).ToUpper())</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-2" aria-labelledby="userDropdown" style="min-width: 230px; border-top: 3px solid var(--pharaoh-gold) !important;">
+                                    <li class="px-2 py-1">
+                                        <div class="fw-bold text-truncate">@User.Identity.Name</div>
+                                        <span class="badge bg-warning text-dark mt-1">@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</span>
+                                    </li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100 text-start">
+                                                <i class="bi bi-box-arrow-right"></i> Sign Out
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link fw-semibold px-3" asp-controller="Account" asp-action="Login">Sign In</a></li>
+                            <li class="nav-item"><a class="btn btn-gold px-4 fw-bold" asp-controller="Account" asp-action="Register">Sign Up</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Off-canvas mobile menu (below lg) -->
+        <div class="offcanvas offcanvas-end text-white" tabindex="-1" id="mobileNav" aria-labelledby="mobileNavLabel">
+            <div class="offcanvas-header border-bottom border-secondary-subtle">
+                <h5 class="offcanvas-title" id="mobileNavLabel" style="font-family:'Cinzel', serif;">
+                    <i class="bi bi-bank text-warning"></i> SafeJourney
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column">
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <div class="d-flex align-items-center mb-4 pb-3 border-bottom border-secondary-subtle">
+                        <span class="avatar-circle me-3">@(string.IsNullOrEmpty(User.Identity.Name) ? "?" : User.Identity.Name!.Substring(0, 1).ToUpper())</span>
+                        <div>
+                            <div class="fw-bold">@User.Identity.Name</div>
+                            <span class="badge bg-warning text-dark">@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</span>
+                        </div>
+                    </div>
+                }
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link fs-5 py-2" asp-controller="Home" asp-action="Index"><i class="bi bi-compass me-2 text-warning"></i>Destinations</a></li>
+                    <li class="nav-item"><a class="nav-link fs-5 py-2" asp-controller="Guides" asp-action="Index"><i class="bi bi-people me-2 text-warning"></i>Local Guides</a></li>
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        @if (User.IsInRole("Tourist"))
+                        {
+                            <li class="nav-item"><a class="nav-link fs-5 py-2" asp-controller="Bookings" asp-action="Index"><i class="bi bi-suitcase-lg me-2 text-warning"></i>My Trip Bookings</a></li>
+                            <li class="nav-item"><a class="nav-link fs-5 py-2" asp-controller="GuideBookings" asp-action="MyBookings"><i class="bi bi-map me-2 text-warning"></i>My Guide Bookings</a></li>
+                        }
+                        @if (User.IsInRole("Guide"))
+                        {
+                            <li class="nav-item"><a class="nav-link fs-5 py-2" asp-controller="GuideBookings" asp-action="IncomingRequests"><i class="bi bi-inbox me-2 text-warning"></i>Incoming Requests</a></li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item"><a class="nav-link fs-5 py-2 text-warning" asp-controller="Admin" asp-action="Index"><i class="bi bi-speedometer2 me-2"></i>Admin Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link fs-5 py-2 text-warning" asp-controller="Destinations" asp-action="Index"><i class="bi bi-map me-2"></i>Manage Destinations</a></li>
+                        }
+                        <li><hr class="border-secondary-subtle" /></li>
+                        <li class="nav-item">
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="nav-link fs-5 py-2 border-0 bg-transparent text-start w-100 text-danger">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Sign Out
+                                </button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li><hr class="border-secondary-subtle" /></li>
+                        <li class="nav-item"><a class="nav-link fs-5 py-2" asp-controller="Account" asp-action="Login"><i class="bi bi-box-arrow-in-right me-2 text-warning"></i>Sign In</a></li>
+                        <li class="nav-item mt-2"><a class="btn btn-gold w-100 fw-bold" asp-controller="Account" asp-action="Register">Sign Up</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <div class="container main-content">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- فوتر يتناسب مع الألوان الفرعونية -->
+    <footer class="pharaoh-nav text-white py-4 mt-5 shadow-lg">
+        <div class="container text-center">
+            <p class="mb-1 fw-bold">&copy; 2026 - WebAppSafeJourney - Discover Egypt's Legacy</p>
+            <p class="mb-0">
+                <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-warning text-decoration-none">Privacy Policy</a>
+            </p>
+            <small class="text-white-50">Built with secure and modern standards.</small>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Smart Navbar: transparent -> solid/glass on scroll
+        (function () {
+            var nav = document.querySelector('.navbar-smart');
+            if (!nav) return;
+            function onScroll() {
+                if (window.scrollY > 60) { nav.classList.add('scrolled'); }
+                else { nav.classList.remove('scrolled'); }
+            }
+            window.addEventListener('scroll', onScroll);
+            onScroll();
+        })();
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Privacy Policy";
+    ViewData["BgImage"] = "https://images.unsplash.com/photo-1541410245366-07469a473489?q=80&w=1920";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+            <div class="card shadow-lg border-0 rounded-4 p-5" style="background-color: rgba(255, 255, 255, 0.95); border-top: 5px solid var(--pharaoh-gold) !important;">
+
+                <h1 class="display-4 fw-bold mb-4" style="color: var(--lapis-blue); font-family: 'Cinzel', serif;">
+                    <i class="bi bi-shield-check text-warning me-2"></i> @ViewData["Title"]
+                </h1>
+
+                <hr class="mb-4" style="border-color: var(--pharaoh-gold); opacity: 0.5;">
+
+                <div class="text-dark lead" style="line-height: 1.8;">
+                    <p>At <strong>SafeJourney</strong>, we value your trust as much as we value our heritage. Protecting your personal data is our solemn duty.</p>
+
+                    <h5 class="fw-bold mt-4" style="color: var(--lapis-blue);">1. Information We Collect</h5>
+                    <p>We collect information you provide directly, such as your name, email, and travel preferences when you book a journey or register as a guide.</p>
+
+                    <h5 class="fw-bold mt-4" style="color: var(--lapis-blue);">2. How We Use Your Data</h5>
+                    <p>Your data is used solely to facilitate your bookings, improve your experience, and ensure the security of our community.</p>
+
+                    <h5 class="fw-bold mt-4" style="color: var(--lapis-blue);">3. Data Protection</h5>
+                    <p>We implement modern security standards to keep your information safe within our digital vaults.</p>
+
+                    <p class="mt-5 text-muted small">
+                        <em>Last updated: July 2026. If you have any concerns regarding your privacy, please contact our support team.</em>
+                    </p>
+                </div>
+
+                <div class="mt-4">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-gold fw-bold px-4">
+                        <i class="bi bi-arrow-left me-2"></i> Return to the Journey
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

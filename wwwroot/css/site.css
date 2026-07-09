@@ -1,0 +1,101 @@
+﻿/* --- Pharaonic Color Palette & Variables --- */
+:root {
+    --pharaoh-gold: #D4AF37;
+    --pharaoh-gold-dark: #B5952F;
+    --lapis-blue: #1A4476;
+    --lapis-blue-dark: #123156;
+    --papyrus-bg: #F9F6ED;
+    --nile-green: #2E8B57;
+    --dark-text: #2C2C2C;
+}
+
+body {
+    background-color: var(--papyrus-bg);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--dark-text);
+}
+
+/* Headings Font */
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+}
+
+/* Custom Navbar */
+.pharaoh-nav {
+    background-color: var(--lapis-blue) !important;
+    border-bottom: 3px solid var(--pharaoh-gold);
+}
+
+    .pharaoh-nav .nav-link, .pharaoh-nav .navbar-brand {
+        color: white !important;
+        transition: color 0.3s ease;
+    }
+
+        .pharaoh-nav .nav-link:hover {
+            color: var(--pharaoh-gold) !important;
+        }
+
+/* Custom Buttons */
+.btn-gold {
+    background-color: var(--pharaoh-gold);
+    color: var(--lapis-blue-dark);
+    font-weight: bold;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+    .btn-gold:hover {
+        background-color: var(--pharaoh-gold-dark);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(212, 175, 55, 0.4);
+    }
+
+/* Destination Cards */
+.destination-card {
+    background-color: white;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+    .destination-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(26, 68, 118, 0.15);
+        border-color: var(--pharaoh-gold);
+    }
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(rgba(26, 68, 118, 0.7), rgba(26, 68, 118, 0.8)), url('https://images.unsplash.com/photo-1539650116574-8efeb43e2750?q=80&w=1200') no-repeat center center;
+    background-size: cover;
+    color: white;
+    border-bottom: 5px solid var(--pharaoh-gold);
+}
+/* ========================================================
+   Global Overrides for Premium Theme (Cards & Tables)
+   ======================================================== */
+
+/* تحويل أي كارت أبيض للون البردي */
+.card {
+    background-color: var(--papyrus-bg, #F9F6ED) !important;
+}
+
+/* تحويل خلفية الجداول للون البردي */
+.table {
+    --bs-table-bg: var(--papyrus-bg, #F9F6ED);
+    background-color: var(--papyrus-bg, #F9F6ED) !important;
+}
+
+    /* التأكد إن رأس الجدول (الـ Header) بيفضل بلون اللازورد الأزرق الفخم */
+    .table thead th, .table thead tr {
+        background-color: var(--lapis-blue, #06283D) !important;
+        color: white !important;
+        border-bottom: 2px solid var(--pharaoh-gold, #D4AF37) !important;
+    }
+
+/* لون الصفوف عند المرور بالماوس (Hover) في الجداول */
+.table-hover tbody tr:hover {
+    background-color: rgba(212, 175, 55, 0.1) !important;
+}

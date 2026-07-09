@@ -1,0 +1,127 @@
+﻿@model IEnumerable<WebAppSafeJourney.Models.TripBooking>
+@using WebAppSafeJourney.Models.Enums
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    ViewData["BgImage"] = ""; // خلفية سادة لراحة عين الأدمن
+}
+
+<div class="container mt-5 mb-5">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-5 p-4 rounded-4 shadow-sm" style="background-color: var(--lapis-blue); color: white; border-left: 5px solid var(--pharaoh-gold);">
+        <h2 class="fw-bold mb-0" style="font-family: 'Cinzel', serif;">
+            <i class="bi bi-speedometer2 text-warning me-2"></i> Imperial Dashboard Overview
+        </h2>
+        <a asp-controller="Destinations" asp-action="Create" class="btn btn-gold fw-bold px-4 shadow">
+            <i class="bi bi-plus-circle me-1"></i> Add New Destination
+        </a>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card h-100 shadow-lg border-0 rounded-4 text-center" style="background-color: var(--lapis-blue); color: white; border-bottom: 4px solid var(--pharaoh-gold) !important; transition: transform 0.3s;">
+                <div class="card-body p-4">
+                    <i class="bi bi-people display-4 text-warning mb-3 d-block"></i>
+                    <h1 class="display-4 fw-bold" style="color: var(--pharaoh-gold);">@ViewBag.TotalTourists</h1>
+                    <h6 class="text-uppercase tracking-wide mt-2 text-white-50">Registered Tourists</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 shadow-lg border-0 rounded-4 text-center" style="background-color: var(--lapis-blue); color: white; border-bottom: 4px solid var(--pharaoh-gold) !important; transition: transform 0.3s;">
+                <div class="card-body p-4">
+                    <i class="bi bi-person-vcard display-4 text-warning mb-3 d-block"></i>
+                    <h1 class="display-4 fw-bold" style="color: var(--pharaoh-gold);">@ViewBag.TotalGuides</h1>
+                    <h6 class="text-uppercase tracking-wide mt-2 text-white-50">Expert Guides</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 shadow-lg border-0 rounded-4 text-center" style="background-color: var(--lapis-blue); color: white; border-bottom: 4px solid var(--pharaoh-gold) !important; transition: transform 0.3s;">
+                <div class="card-body p-4">
+                    <i class="bi bi-bank display-4 text-warning mb-3 d-block"></i>
+                    <h1 class="display-4 fw-bold" style="color: var(--pharaoh-gold);">@ViewBag.TotalDestinations</h1>
+                    <h6 class="text-uppercase tracking-wide mt-2 text-white-50">Active Sites</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 shadow-lg border-0 rounded-4 text-center" style="background-color: var(--lapis-blue); color: white; border-bottom: 4px solid var(--pharaoh-gold) !important; transition: transform 0.3s;">
+                <div class="card-body p-4">
+                    <i class="bi bi-hourglass-split display-4 text-warning mb-3 d-block"></i>
+                    <h1 class="display-4 fw-bold" style="color: var(--pharaoh-gold);">@ViewBag.PendingBookings</h1>
+                    <h6 class="text-uppercase tracking-wide mt-2 text-white-50">Pending Bookings</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Bookings Table -->
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="background-color: rgba(255, 255, 255, 0.95); border-top: 5px solid var(--pharaoh-gold) !important;">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center" style="background-color: var(--papyrus-bg); border-bottom: 2px solid var(--pharaoh-gold);">
+            <h5 class="mb-0 fw-bold" style="color: var(--lapis-blue); font-family: 'Cinzel', serif;">
+                <i class="bi bi-clock-history text-warning me-2"></i>Recent Booking Decrees
+            </h5>
+            <a asp-controller="Bookings" asp-action="Index" class="btn btn-sm fw-bold px-3" style="border: 1px solid var(--lapis-blue); color: var(--lapis-blue);">
+                View All Archives
+            </a>
+        </div>
+        <div class="card-body p-0 table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background-color: var(--lapis-blue); color: white;">
+                    <tr>
+                        <th class="py-3 px-4"><i class="bi bi-hash"></i> ID</th>
+                        <th class="py-3"><i class="bi bi-person"></i> Tourist</th>
+                        <th class="py-3"><i class="bi bi-geo-alt"></i> Destination</th>
+                        <th class="py-3"><i class="bi bi-calendar3"></i> Date</th>
+                        <th class="py-3"><i class="bi bi-shield-check"></i> Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.2);">
+                            <td class="align-middle fw-bold px-4" style="color: var(--pharaoh-gold-dark);">#@item.Id</td>
+                            <td class="align-middle fw-bold text-dark">@item.Tourist?.FullName</td>
+                            <td class="align-middle fw-bold" style="color: var(--lapis-blue);">@item.Destination?.Name</td>
+                            <td class="align-middle fw-semibold">
+                                <span class="badge" style="background-color: var(--papyrus-bg); color: var(--lapis-blue); border: 1px solid var(--pharaoh-gold);">
+                                    @item.CreatedAt.ToString("MMM dd, yyyy")
+                                </span>
+                            </td>
+                            <td class="align-middle">
+                                @if (item.Status == TripBookingStatus.Pending)
+                                {
+                                    <span class="badge bg-warning text-dark px-3 py-2 shadow-sm">Pending</span>
+                                }
+                                else if (item.Status == TripBookingStatus.Confirmed)
+                                {
+                                    <span class="badge bg-success px-3 py-2 shadow-sm">Confirmed</span>
+                                }
+                                else if (item.Status == TripBookingStatus.Completed)
+                                {
+                                    <span class="badge bg-info text-dark px-3 py-2 shadow-sm">Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger px-3 py-2 shadow-sm">Cancelled</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="bi bi-folder2-open display-4 d-block mb-2" style="color: var(--pharaoh-gold);"></i>
+                                <h5 style="font-family: 'Cinzel', serif;">No recent bookings found.</h5>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

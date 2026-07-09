@@ -1,0 +1,78 @@
+﻿@model WebAppSafeJourney.ViewModels.RegisterVM
+
+@{
+    ViewData["Title"] = "Sign Up";
+    ViewData["BgImage"] = "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=1920";
+}
+
+<div class="row justify-content-center align-items-center py-5">
+    <div class="col-md-6">
+        <div class="card shadow-lg border-0 rounded-4" style="background-color: rgba(255, 255, 255, 0.95); border-top: 5px solid var(--lapis-blue) !important;">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="bi bi-journal-text fs-1 text-warning"></i>
+                    <h2 class="fw-bold mt-2" style="color: var(--lapis-blue);">Begin Your Legacy</h2>
+                    <p class="text-muted">Join us to book guides and explore the ancient world.</p>
+                </div>
+
+                <form asp-action="Register" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3 fw-bold"></div>
+
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <input asp-for="FullName" class="form-control" placeholder="Full Name" />
+                                <label asp-for="FullName"><i class="bi bi-person"></i> Full Name</label>
+                                <span asp-validation-for="FullName" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Email" class="form-control" placeholder="name@example.com" />
+                        <label asp-for="Email"><i class="bi bi-envelope"></i> Email address</label>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+                                <label asp-for="Password"><i class="bi bi-shield-lock"></i> Password</label>
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="form-floating">
+                                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password" />
+                                <label asp-for="ConfirmPassword"><i class="bi bi-shield-check"></i> Confirm Password</label>
+                                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <select asp-for="Role" class="form-select border-warning" id="roleSelect">
+                            <option value="Tourist">Tourist</option>
+                            <option value="Guide">Guide</option>
+                        </select>
+                        <label for="roleSelect"><i class="bi bi-briefcase me-1"></i> I am a...</label>
+                        <span asp-validation-for="Role" class="text-danger small fw-bold"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-gold py-3 fs-5">Create Account</button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="mb-0">Already have an account? <a asp-action="Login" style="color: var(--lapis-blue); font-weight: bold;">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
